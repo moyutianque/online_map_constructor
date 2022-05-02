@@ -34,12 +34,14 @@ def main():
     
     # 2. Process scenes:
     for k,v in data_dict.items():
+        if k != 'r1Q1Z4BcV1o':
+            continue
         print('\033[92m'+f'Swtich to scene {k}'+'\033[0m')
         full_map_constructor = Full_2D_Map_Countructor(scene_id=k, args = args)
-        for (ep_id, ep_data) in tqdm(v.items()):
+        for i, (ep_id, ep_data) in enumerate(tqdm(v.items())):
             full_map_constructor.parse_action_seq(
                 ep_data['gt_actions'], start_sim_loc=ep_data['start_position'], 
-                start_sim_rot=ep_data['start_rotation'], info={'ep_id': ep_id, 'instruction': ep_data['instruction']},
+                start_sim_rot=ep_data['start_rotation'], info={'idx':i, 'ep_id': ep_id, 'instruction': ep_data['instruction']},
                 vis_step=args.vis_stepwise
             )
             

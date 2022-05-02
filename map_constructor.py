@@ -58,10 +58,17 @@ class Full_2D_Map_Countructor(object):
         agent_state.position = np.array(start_pos)  # world space
         agent_state.rotation = start_rot
         agent.set_state(agent_state)
-        
-        if not hasattr(self, 'last_sim_location'):
-            self.last_sim_location = self.get_sim_location() # TODO should change when multi ep
 
+        if not hasattr(self, 'last_sim_location'):
+            self.last_sim_location = self.get_sim_location() 
+            # if info['idx'] == 0:
+            #     # Zehao @ May 2: Unify the coordinate according to real sim location
+            #     scene = self.sim.semantic_scene
+            #     lower_bound, upper_bound = scene.aabb.center - (scene.aabb.sizes/2), scene.aabb.center + (scene.aabb.sizes/2)
+            #     xs, zs, ys = lower_bound
+            #     self.origins.fill(0)
+            #     self.last_sim_location = [xs, ys, 0]
+                
         for i, action_index in enumerate(action_seq):
             action = action_dict[action_index]
             if action == 'stop':
@@ -191,7 +198,7 @@ class Full_2D_Map_Countructor(object):
         local_map = torch.zeros(num_scenes, nc, local_w,
                                 local_h).float().to(args.device)
         # Initial full and local pose
-        full_pose = torch.zeros(num_scenes, 3).float().to(args.device)
+        full_pose = torch.zeros(num_scenes, 3).float().to(args.device) # x,y,o in degree
         local_pose = torch.zeros(num_scenes, 3).float().to(args.device)
 
         # Origin of local map
@@ -227,6 +234,7 @@ class Full_2D_Map_Countructor(object):
 
             local_map[e] = full_map[e, :, lmb[e, 0]:lmb[e, 1], lmb[e, 2]:lmb[e, 3]]
             local_pose[e] = full_pose[e] - torch.from_numpy(origins[e]).to(args.device).float()
+        
 
         init_map_and_pose_for_env(0)
         self.full_map = full_map

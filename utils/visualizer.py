@@ -36,7 +36,8 @@ def draw_observation(rgb, depth):
     depth_img = Image.fromarray((depth.cpu().detach().numpy() / 10 * 255).astype(np.uint8), mode="L")
     tc = time.time()
     rgb_img.save(f'./tmp/obs-{tc}_rgb.jpg')
-    depth_img.save(f'./tmp/obs-{tc}_depth.jpg')
+    # depth_img.save(f'./tmp/obs-{tc}_depth.jpg')
+    exit()
 
 def draw_map(full_maps_raw, dump_dir, map_resolution, scene_id, stepinfo_and_agent_pose=None, e=0, out_map_size=480):
     os.makedirs(dump_dir, exist_ok=True)

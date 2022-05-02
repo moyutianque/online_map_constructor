@@ -162,7 +162,7 @@ def get_args():
                         help='path to dump models and log (default: ./tmp/)')
     
     # Visualization
-    parser.add_argument('--vis_stepwise', type=bool, default=False)
+    parser.add_argument('--vis_stepwise', action='store_true', default=False)
 
     # parse arguments
     args = parser.parse_args()

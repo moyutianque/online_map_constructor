@@ -31,6 +31,6 @@ vlnce -> ```/data/leuven/335/vsc33595/dataset/vln_task/R2R_VLNCE_v1-2_preprocess
 
 
 ```bash
-python run.py --vis_stepwise True   # if want to have stepwise plot with agent arrow
-python run.py --vis_stepwise False  # if only want the overall map after explore
+python run.py --vis_stepwise  # if want to have stepwise plot with agent arrow
+python run.py  # if only want the overall map after explore
 ```
