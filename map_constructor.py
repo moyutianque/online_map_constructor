@@ -61,13 +61,15 @@ class Full_2D_Map_Countructor(object):
 
         if not hasattr(self, 'last_sim_location'):
             self.last_sim_location = self.get_sim_location() 
-            # if info['idx'] == 0:
-            #     # Zehao @ May 2: Unify the coordinate according to real sim location
-            #     scene = self.sim.semantic_scene
-            #     lower_bound, upper_bound = scene.aabb.center - (scene.aabb.sizes/2), scene.aabb.center + (scene.aabb.sizes/2)
-            #     xs, zs, ys = lower_bound
-            #     self.origins.fill(0)
-            #     self.last_sim_location = [xs, ys, 0]
+            if info['idx'] == 0:
+                # Zehao @ May 2: Unify the coordinate according to real sim location
+                scene = self.sim.semantic_scene
+                # lower_bound, upper_bound = scene.aabb.center - (scene.aabb.sizes/2), scene.aabb.center + (scene.aabb.sizes/2)
+                # xs, zs, ys = lower_bound
+                # self.origins.fill(0)
+                # self.last_sim_location = [xs, ys, 0]
+                ys, zs, xs = scene.aabb.center 
+                self.last_sim_location = [-xs, -ys, -np.pi/2] # x y o # assign initial center to map center
                 
         for i, action_index in enumerate(action_seq):
             action = action_dict[action_index]
@@ -198,7 +200,7 @@ class Full_2D_Map_Countructor(object):
         local_map = torch.zeros(num_scenes, nc, local_w,
                                 local_h).float().to(args.device)
         # Initial full and local pose
-        full_pose = torch.zeros(num_scenes, 3).float().to(args.device) # x,y,o in degree
+        full_pose = torch.zeros(num_scenes, 3).float().to(args.device) # x,y,o in degree, but last_sim_location is in radian
         local_pose = torch.zeros(num_scenes, 3).float().to(args.device)
 
         # Origin of local map

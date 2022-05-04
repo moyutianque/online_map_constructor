@@ -127,7 +127,6 @@ class Local_2D_Map_Constructor(nn.Module):
             self.init_grid * 0., self.feat, XYZ_cm_std).transpose(2, 3)
         # ==> egocentric voxels (bs, self.feat.shape[1], vision_range, vision_range, downscaled_height)
         # TODO: it seems splat_feat_nd give the first feat dimension, i.e. voxels[:,0:1] 0/1 value represent wether this height is occupied
-        import ipdb;ipdb.set_trace() # breakpoint 130
 
         # MAP 3. Define observed area (map_pred) and explorable area (exp_pred) by number of occupied voxel at each position
         min_z = int(25 / z_resolution - min_h) 

@@ -6,6 +6,7 @@ from map_constructor import Full_2D_Map_Countructor
 from tqdm import tqdm
 import warnings
 warnings.simplefilter("ignore", UserWarning)
+import random
 
 def main():
     args = get_args()
@@ -38,7 +39,11 @@ def main():
             continue
         print('\033[92m'+f'Swtich to scene {k}'+'\033[0m')
         full_map_constructor = Full_2D_Map_Countructor(scene_id=k, args = args)
-        for i, (ep_id, ep_data) in enumerate(tqdm(v.items())):
+
+        ep_ids = list(v.keys())
+        random.shuffle(ep_ids)
+        for i, (ep_id) in enumerate(tqdm(ep_ids)):
+            ep_data = v[ep_id]
             full_map_constructor.parse_action_seq(
                 ep_data['gt_actions'], start_sim_loc=ep_data['start_position'], 
                 start_sim_rot=ep_data['start_rotation'], info={'idx':i, 'ep_id': ep_id, 'instruction': ep_data['instruction']},
