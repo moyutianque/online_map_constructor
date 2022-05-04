@@ -127,6 +127,7 @@ class Local_2D_Map_Constructor(nn.Module):
             self.init_grid * 0., self.feat, XYZ_cm_std).transpose(2, 3)
         # ==> egocentric voxels (bs, self.feat.shape[1], vision_range, vision_range, downscaled_height)
         # TODO: it seems splat_feat_nd give the first feat dimension, i.e. voxels[:,0:1] 0/1 value represent wether this height is occupied
+        import ipdb;ipdb.set_trace() # breakpoint 130
 
         # MAP 3. Define observed area (map_pred) and explorable area (exp_pred) by number of occupied voxel at each position
         min_z = int(25 / z_resolution - min_h) 
@@ -147,6 +148,10 @@ class Local_2D_Map_Constructor(nn.Module):
                                  self.map_size_cm // self.resolution
                                  ).to(self.device)
 
+        #### shift to agent cetric, which fit the relative coord of voxels (vision_range//2, 0, height//2) is camera
+        #   [   ]     [   ]
+        #  ^      =>    ^
+        #  |            |
         x1 = self.map_size_cm // (self.resolution * 2) - self.vision_range // 2
         x2 = x1 + self.vision_range
         y1 = self.map_size_cm // (self.resolution * 2)

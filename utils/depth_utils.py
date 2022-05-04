@@ -137,6 +137,7 @@ def get_point_cloud_from_z_t(Y_t, camera_matrix, device, scale=1):
         Z is positive up in the image
         XYZ is ...xHxWx3
     """
+    # create a ego grid map
     grid_x, grid_z = torch.meshgrid(torch.arange(Y_t.shape[-1]),
                                     torch.arange(Y_t.shape[-2] - 1, -1, -1))
     grid_x = grid_x.transpose(1, 0).to(device)
@@ -144,6 +145,7 @@ def get_point_cloud_from_z_t(Y_t, camera_matrix, device, scale=1):
     grid_x = grid_x.unsqueeze(0).expand(Y_t.size())
     grid_z = grid_z.unsqueeze(0).expand(Y_t.size())
 
+    # shift the coordinate to camera centric, i.e. (0,0) point in ego grid map, while become (-xc, -zc) in ego grid map
     X_t = (grid_x[:, ::scale, ::scale] - camera_matrix.xc) * \
         Y_t[:, ::scale, ::scale] / camera_matrix.f
     Z_t = (grid_z[:, ::scale, ::scale] - camera_matrix.zc) * \
@@ -221,6 +223,7 @@ def splat_feat_nd(init_grid, feat, coords):
         pos_d = []
         wts_d = []
 
+        # NOTE by zehao: assign zero if point outside vision range
         for ix in [0, 1]:
             pos_ix = torch.floor(pos) + ix
             safe_ix = (pos_ix > 0) & (pos_ix < grid_dims[d])
@@ -239,7 +242,7 @@ def splat_feat_nd(init_grid, feat, coords):
 
     l_ix = [[0, 1] for d in range(n_dims)]
 
-    for ix_d in itertools.product(*l_ix):
+    for ix_d in itertools.product(*l_ix): # NOTE by zehao: go through every idx from [0,0,0] to [1,1,1]
         wts = torch.ones_like(wts_dim[0][0])
         index = torch.zeros_like(wts_dim[0][0])
         for d in range(n_dims):
